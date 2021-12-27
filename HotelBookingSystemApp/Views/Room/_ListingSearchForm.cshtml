@@ -1,0 +1,53 @@
+﻿@using HotelBookingSystemApp.ViewModels
+@model HomeFiltersViewModel
+
+@{
+    // Restore cities and room types from ViewData (these were stored there by the Controller)
+    var cities = ViewData["Cities"] as IEnumerable<string>;
+    var roomTypes = ViewData["RoomTypes"] as IEnumerable<RoomType>;
+}
+
+<h5 style="color: #E55B13;">Find the Perfect Hotel</h5>
+<form method="get" asp-controller="Room" asp-action="Listing">
+    <div class="row form-group">
+        <select style="width: 50%; border-radius: 5px; border-color: #f2f2f2; background-color: #f2f2f2; color: #909090; padding: 10px; " asp-for="City">
+            <option value="" style="text-align:center;">City</option>
+            @foreach (var city in cities)
+            {
+                <option>@city</option>
+            }
+        </select>
+    </div>
+    <div class="row form-group" form-group">
+        <select style="width: 50%; border-radius: 5px; border-color: #f2f2f2;background-color: #f2f2f2; color: #909090; padding: 10px; " asp-for="RoomTypeId">
+            <option value="" style="width:150%; text-align:center;">Room Type</option>
+            @foreach (var roomType in roomTypes)
+            {
+                <option value="@roomType.Id">@roomType.RoomType1</option>
+            }
+        </select>
+    </div>
+
+    <div class="row form-group">
+
+        <input asp-for="CountOfGuests" style="width: 50%; text-align: center; border-radius: 5px; border-color: #f2f2f2; background-color: #f2f2f2; color: #909090; padding: 10px; " placeholder="@Html.DisplayNameFor(m => m.CountOfGuests)" />
+    </div>
+
+    <div class="row form-group">
+        <input asp-for="CheckInDate" type="date" style="width: 50%; text-align: center; border-radius: 5px; border-color: #f2f2f2; background-color: #f2f2f2; color: #909090; padding: 10px; " placeholder="@Html.DisplayNameFor(m => m.CheckInDate)" />
+        <span asp-validation-for="CheckInDate" class="form-text text-danger"></span>
+    </div>
+    <div class="row form-group">
+        <input asp-for="CheckOutDate" type="date" style="width: 50%; text-align: center; border-radius: 5px; border-color: #f2f2f2; background-color: #f2f2f2; color: #909090; padding: 10px; " placeholder="@Html.DisplayNameFor(m => m.CheckOutDate)" />
+        <span asp-validation-for="CheckOutDate" class="form-text text-danger"></span>
+    </div>
+    <div class="row form-group">
+        <input asp-for="AmountMin" style="width: 50%; text-align: center; border-radius: 5px; background-color: #f2f2f2; color: #909090; padding: 10px; " placeholder="@Html.DisplayNameFor(m => m.AmountMin)" />
+    </div>
+
+    <div class="row form-group">
+        <input asp-for="AmountMax" style="width: 50%; text-align: center; border-radius: 5px; background-color: #f2f2f2; color: #909090; padding: 10px; " placeholder="@Html.DisplayNameFor(m => m.AmountMax)" />
+    </div>
+    <input type="submit" class="btn" style="width: 45%; background-color: #E55B13; color: white; " value="Find the Room" />
+</form>
+
