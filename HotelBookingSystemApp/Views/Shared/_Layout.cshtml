@@ -14,7 +14,7 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">HotelBookingSystemApp</a>
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Hotel Booking System</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -40,13 +40,30 @@
     </div>
 
     <footer class="border-top footer text-muted">
-        <div class="container" style="text-align:center">
-            &copy; 2021 - Hotel Booking Application - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        <div class="container" style="text-align:center;">
+            &copy; 2021 - Hotel Booking System - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/jquery/rateyo/jquery.min.js"></script>
+    <script src="~/lib/jquery/rateyo/jquery.rateyo.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script>$(function () {
+
+            $("#rateYo").rateYo({
+                rating: 0,
+                numStars: 5,
+                maxValue: 5,
+                halfStar: true,
+                onChange: function (rating, rateYoInstance) {
+                    $('#rating').val(rating);
+                }
+
+            });
+
+        });</script>
     @RenderSection("Scripts", required: false)
 </body>
 </html>

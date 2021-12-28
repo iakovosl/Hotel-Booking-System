@@ -9,12 +9,25 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/jquery.rateyo.min.css" type="text/css" />
+    <link rel="stylesheet" href="~/css/jquery.rateyo.css" type="text/css" />
     <link rel="stylesheet" href="~/css/site.css" />
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-
+    <script src="~/lib/jquery/rateyo/jquery.min.js"></script>
+    <script src="~/lib/jquery/rateyo/jquery.rateyo.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
- 
+    <style>
+        table {
+            width: 70%;
+        }
+
+        #Reviews_Text {
+            position: relative;
+            left: -350px;
+            top: 200px;
+        }
+    </style>
 </head>
 
 <div class="container" style="margin-top:5px;">
@@ -91,5 +104,73 @@
             }
 
         </div>
-      </div>
+        <div style="position:relative; left:20px; top: 200px">
+            <div style="position: relative; top:110px; left:-3%;  border-left: 3px solid orange; height: 110px;"></div>
+            <h6>Reviews</h6>
+            <table>
+                @{int i = 1; }
+                @foreach (var review in ViewBag.room.Reviews)
+                {
+
+                    <tr>
+                        <th> @review.UserName</th>
+
+                    </tr>
+                    <tr>
+                        <td>
+                            <script>
+                        $(function () {
+
+                            $('#@("rating" + i)').rateYo({
+                                rating: @review.Rate,
+                                readOnly: true
+                            });
+                        });
+                            </script>
+                            <div id="@("rating" + i)"></div>
+                            @review.Text
+                            <br />
+                        </td>
+
+                    </tr>
+
+                    i++;
+                }
+            </table>
+        </div>
+    </div>
 </div>
+
+<div style="position:relative; top: 200px; margin-bottom:40%; left:11%; ">
+    @if (SignInManager.IsSignedIn(User))
+    {
+        @using (Html.BeginForm("SendReview", "Room", FormMethod.Post))
+        {
+            <div style="position: relative; left: -10%; top: 240px; border-left: 3px solid orange; height: 110px;"></div>
+            <table>
+                <tr>
+                    <th valign="top" style=" position: relative; top:125px; left:-13%; ">Add Review</th>
+                    <td>
+                        <div style="position: relative; left:-130%; top:150px;  " id="rateYo"></div>
+                        <input type="hidden" style="position: relative; " id="rating" name="rate" />
+                    </td>
+                    <td>@Html.TextAreaFor(model => model.Reviews.Text, new { cols = 60, rows = 2 })</td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="submit" class="btn" style="width: 100%; position: relative; left: 180px; top: 230px; background-color: #E55B13; color: white;" value="Add Review!" />
+                        @Html.HiddenFor(model => model.RoomId)
+                    </td>
+                </tr>
+            </table>
+        }
+    }
+    else
+    {
+        <form method="post" asp-area="Identity" asp-page="/Account/Login">
+
+            <input type="submit" class="btn" style="position: absolute; padding: 2px 10px; top:95%; background-color: #E55B13; color: white;" value="Login to Review" />
+        </form>
+    }
+</div>
+

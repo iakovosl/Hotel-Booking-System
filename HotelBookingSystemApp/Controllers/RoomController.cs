@@ -91,6 +91,15 @@ namespace HotelBookingSystemApp.Controllers
                 booking.RoomId == id);
 
             model.IsAvailable = !bookings.Any();
+
+            ViewBag.Reviews = db.Reviews.ToList();
+            ViewBag.room = room;
+            var review = new Reviews()
+            {
+
+                RoomId = room.RoomId
+            };
+            model.RoomId = id;
             return View(model);
         }
 
@@ -110,6 +119,35 @@ namespace HotelBookingSystemApp.Controllers
             db.SaveChanges();
 
             return RedirectToAction("Index", "Home");
+        }
+
+         [HttpGet]
+        public ActionResult Review(int id)
+        {
+            var room = db.Room.Find(id);
+            ViewBag.Reviews = db.Reviews.ToList();
+            ViewBag.room = room;
+            var review = new Reviews()
+            {
+               
+                RoomId = room.RoomId
+            };
+            return View("Reviews",review);
+        }
+
+        [HttpPost]
+        public ActionResult SendReview(ReviewsViewModel reviewsViewModel, double rate, int roomId)
+        {
+            string UserId = ((User.Identity as ClaimsIdentity).FindFirst(ClaimTypes.NameIdentifier).Value.ToString().Replace("-", ""));
+            reviewsViewModel.Reviews.UserId = UserId;
+            string UserName = ((User.Identity as ClaimsIdentity).FindFirst(ClaimTypes.Name).Value.ToString());
+            reviewsViewModel.Reviews.UserName = UserName;
+            reviewsViewModel.Reviews.DateCreated = DateTime.Now;
+            reviewsViewModel.Reviews.Rate = rate;
+            reviewsViewModel.Reviews.RoomId = roomId;
+            db.Add(reviewsViewModel.Reviews);
+            db.SaveChanges();
+            return RedirectToAction("Index","Home");
         }
 
     }

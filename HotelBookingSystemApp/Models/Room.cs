@@ -9,6 +9,13 @@ namespace HotelBookingSystemApp.Models
 {
     public partial class Room
     {
+        public Room()
+        {
+            Bookings = new List<Bookings>();
+            Reviews = new List<Reviews>();
+            //Reviews = new Reviews();         
+        }
+
         public int RoomId { get; set; }
         public string Name { get; set; }
         public string City { get; set; }
@@ -26,5 +33,10 @@ namespace HotelBookingSystemApp.Models
         public int Parking { get; set; }
         public int Wifi { get; set; }
         public int PetFriendly { get; set; }
+
+
+        //public virtual Reviews Reviews { get; set; }
+        public virtual ICollection<Reviews> Reviews { get; set; }
+        public virtual ICollection<Bookings> Bookings { get; set; }
     }
 }
