@@ -1,0 +1,95 @@
+﻿@using HotelBookingSystemApp.ViewModels
+@using Microsoft.AspNetCore.Identity
+@model ReviewsViewModel
+
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="~/js/site.js" asp-append-version="true"></script>
+ 
+</head>
+
+<div class="container" style="margin-top:5px;">
+    <div class="row">
+        <div class="col-sm-12">
+            <div style="background-color: #E55B13; height: 6%; color: white;">
+                @Model.Room.Name -  @Model.Room.City - Per Night:&#128; @Model.Room.Price
+            </div>
+
+
+            <img src="~/images/@Model.Room.Photo" alt="Hotel Image" style="position: relative; top: 4%; width: 350px; height: 270px;">
+            <div style="background-color: #E55B13; height: 10%; top: 7%; position: relative; color: white; ">
+                Count of Guests : @Model.Room.CountOfGuests - Type of Room : @Model.Room.RoomTypeId - Parking: @(Model.Room.Parking == 1 ? "Yes":"Yes") - WIFI:@(Model.Room.Wifi == 1 ?"Yes":"No") - Pet Friendly: @(Model.Room.PetFriendly == 1 ?"Yes":"No")
+            </div>
+            <div style="position: relative; top: 10%; border-left: 3px solid orange; height: 110px;"></div>
+            <div style=" position: absolute; top: 82%; left:8px; margin: 15px;">
+                <h6>Room Description</h6>
+                <p>@Model.Room.LongDescription</p>
+            </div>
+            @*
+                    <div class="text-right">
+
+                       <a asp-controller="Room" asp-action="Review" asp-route-id="@Model.Room.RoomId" />
+                <input class="btn" style="background-color: #E55B13; margin-top: -10px; color: white; " type="submit"
+                       value="Go">
+                </a>
+
+                </div>
+            *@
+
+            <hr style="border-top: 1px dashed black; position: relative; bottom: -35%;">
+
+
+            @if (!Model.ShowBookingButton)
+            {
+                <p>You have not provided a date range yet</p>
+            }
+            else if (!Model.IsAvailable)
+            {
+                <p>Room is already booked</p>
+            }
+            else
+            {
+
+                @if (SignInManager.IsSignedIn(User))
+                {
+                    <form method="post" asp-action="SubmitBooking">
+
+                        <input type="hidden" asp-for="BookingInfo.RoomId" />
+                        <input type="hidden" asp-for="BookingInfo.CheckInDate" />
+                        <input type="hidden" asp-for="BookingInfo.CheckOutDate" />
+                        <input type="submit" class="btn" style="position: absolute; left:90%; padding: 2px 10px; top:125%; background-color: #E55B13; color: white;" value="Book Now" />
+
+                    </form>
+                    <form method="post" asp-action="LikeButton">
+
+                        <input type="hidden" asp-for="BookingInfo.RoomId" />
+                        <input type="hidden" asp-for="BookingInfo.Favorites.DateCreated" />
+                        @*
+                            <input type="submit" class="btn" style="position: absolute; left: 25%; padding: 2px 10px;  background-color: #E55B13; color: white;" value=" Like button" />
+                        *@
+                    </form>
+
+                }
+                else
+                {
+                    <form method="post" asp-area="Identity" asp-page="/Account/Login">
+
+                        <input type="submit" class="btn" style="position: absolute; left: 88%; padding: 2px 10px; top: 125%; background-color: #E55B13; color: white;" value="Login to Book" />
+                    </form>
+                }
+
+
+            }
+
+        </div>
+      </div>
+</div>

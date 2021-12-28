@@ -13,7 +13,7 @@ namespace HotelBookingSystemApp.Models
         public string CheckInDate { get; set; }
         public string CheckOutDate { get; set; }
         public DateTime DateCreated { get; set; }
-        public int UserId { get; set; }
+        public string UserId { get; set; }
         public int RoomId { get; set; }
     }
 }

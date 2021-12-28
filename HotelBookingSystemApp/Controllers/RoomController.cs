@@ -6,8 +6,11 @@ using Microsoft.Extensions.Logging;
 using HotelBookingSystemApp.Models;
 using HotelBookingSystemApp.ViewModels;
 using HotelBookingSystemApp.Controllers;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
-namespace hotelbookingsystem.Controllers
+
+namespace HotelBookingSystemApp.Controllers
 {
     public class RoomController : Controller
     {
@@ -62,6 +65,52 @@ namespace hotelbookingsystem.Controllers
 
             return View(model);
         }
-       
+
+        [HttpGet]
+        public IActionResult Detail(int id, BookingViewModel bookingInfo)
+        {
+            var room = db.Room.SingleOrDefault(r => r.RoomId == id);
+            if (room == null)
+                return RedirectToAction("Index", "Home");
+
+            var model = new ReviewsViewModel
+            {
+                Room = room,
+                BookingInfo = bookingInfo,
+
+                ShowBookingButton = !string.IsNullOrEmpty(bookingInfo.CheckInDate) && !string.IsNullOrEmpty(bookingInfo.CheckOutDate)
+            };
+            model.BookingInfo.RoomId = id;
+
+            // Find all bookings in date range
+            // Dates are stored in the database in the format: yyyy-mm-dd
+            // So to compare, we compare them as strings
+            var bookings = db.Bookings.Where(booking =>
+                booking.CheckInDate.CompareTo(bookingInfo.CheckOutDate) <= 0 &&
+                bookingInfo.CheckInDate.CompareTo(booking.CheckOutDate) <= 0 &&
+                booking.RoomId == id);
+
+            model.IsAvailable = !bookings.Any();
+            return View(model);
+        }
+
+        [Authorize]
+        [HttpPost]
+        public IActionResult SubmitBooking(BookingViewModel bookingInfo)
+        {
+
+            db.Bookings.Add(new Bookings
+
+            {
+                CheckInDate = bookingInfo.CheckInDate,
+                CheckOutDate = bookingInfo.CheckOutDate,
+                DateCreated = DateTime.Now,
+                RoomId = bookingInfo.RoomId,
+                UserId = ((User.Identity as ClaimsIdentity).FindFirst(ClaimTypes.NameIdentifier).Value.ToString().Replace("-", ""))});
+            db.SaveChanges();
+
+            return RedirectToAction("Index", "Home");
+        }
+
     }
 }
