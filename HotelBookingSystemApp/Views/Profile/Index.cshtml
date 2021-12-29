@@ -1,0 +1,89 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using System.Collections.Generic
+@using HotelBookingSystemApp.ViewModels
+@model ListingPageViewModel
+
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/jquery.rateyo.min.css" type="text/css" />
+    <link rel="stylesheet" href="~/css/jquery.rateyo.css" type="text/css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/jquery/rateyo/jquery.min.js"></script>
+    <script src="~/lib/jquery/rateyo/jquery.rateyo.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+</head>
+
+@{
+    ViewData["Title"] = "Profile";
+}
+
+<div class="container" style="margin-top:5px;">
+    <div class="row">
+        <div class="col-sm-4">
+            <h5>My Reviews</h5>
+            @{int i = 1; }
+            @foreach (var reviews in Model.Reviews)
+            {
+                <ul>
+                    <li>
+                        @reviews.Room.Name
+                        <script>
+                $(function () {
+
+                    $('#@("rating" + i)').rateYo({
+                        rating: @reviews.Rate,
+                        readOnly: true
+                    });
+                });
+                        </script>
+                        <div id="@("rating" + i)"></div>
+
+                        My Comments: @reviews.Text
+                    </li>
+                </ul>
+                i++;
+            }
+            @*
+                <h5>My Favorites Hotels</h5>
+                @foreach (var favorites in Model.Favorites)
+                {
+                    <ul>
+                        <li>@favorites.Room.Name</li>
+
+                    </ul>
+                }
+            *@
+        </div>
+        <div class="col-sm-8">
+            <div class="alert alert-warning" style="background-color: #E55B13; margin-bottom: -10px; color: white;">My Bookings</div>
+
+            @foreach (var booking in Model.Bookings)
+            {
+                <p style="position: relative; left: 193px; top: 20px;"> @booking.Room.Name</p>
+                <p style="position: relative; left: 193px; margin-bottom: 15px; margin-top: 15px; "> @booking.Room.City</p>
+
+                <p><img src="~/images/@booking.Room.Photo" alt="Hotel Image" style="position: relative; bottom: 50px; width: 165px; height: 120px;"></p>
+                <div class="main-form">
+                    <div style=" position:relative; left: 180px; bottom: 190px; border-left: 3px solid orange; height: 130px;"></div>
+                    <div style="position: relative; margin-left: 150px; margin-bottom: -85px; left: 20px; bottom: 305px; padding: 25px;">@booking.Room.ShortDescription</div>
+                </div>
+
+                <div class="col-sm-4">
+                    <p style="background-color: #989898; color: white;  text-align: center; bottom: -5px;">Per Night:&#128;@booking.Room.Price</p>
+                    </div>
+                    <div class="col-sm-8">
+                        <p style="background-color: #D3D3D3; color: white; bottom: 35px; text-align: center; ">Check-In-Date: @booking.CheckInDate - Check-Out-Date: @booking.CheckOutDate</p>
+                    </div>
+
+                    }
+                </div>
+    </div>
+</div>
+
