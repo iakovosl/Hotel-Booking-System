@@ -17,7 +17,23 @@
     <script src="~/lib/jquery/rateyo/jquery.min.js"></script>
     <script src="~/lib/jquery/rateyo/jquery.rateyo.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+    <script>
+        let map;
+        function initMap() {
+            map = new google.maps.Map(document.getElementById("map"), {
+                center: { lat: @Model.Room.LatLocation.ToString(), lng:  @Model.Room.LngLocation.ToString() },
+                zoom: 8,
+            });
+        }
+    </script>
     <style>
+        /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+        #map {
+            height: 100%;
+        }
+
         table {
             width: 70%;
         }
@@ -34,13 +50,11 @@
     <div class="row">
         <div class="col-sm-12">
             <div style="background-color: #E55B13; height: 6%; color: white;">
-                @Model.Room.Name -  @Model.Room.City - Per Night:&#128; @Model.Room.Price
+                @Model.Room.Name -  @Model.Room.City - Per Night: &#128;@Model.Room.Price
             </div>
-
-
             <img src="~/images/@Model.Room.Photo" alt="Hotel Image" style="position: relative; top: 4%; width: 350px; height: 270px;">
             <div style="background-color: #E55B13; height: 10%; top: 7%; position: relative; color: white; ">
-                Count of Guests : @Model.Room.CountOfGuests - Type of Room : @Model.Room.RoomTypeId - Parking: @(Model.Room.Parking == 1 ? "Yes":"Yes") - WIFI:@(Model.Room.Wifi == 1 ?"Yes":"No") - Pet Friendly: @(Model.Room.PetFriendly == 1 ?"Yes":"No")
+                Count of Guests : @Model.Room.CountOfGuests - Type of Room : @Model.Room.RoomTypeId - Parking: @(Model.Room.Parking == 1 ? "Yes":"No") - WIFI: @(Model.Room.Wifi == 1 ? "Yes":"No") - Pet Friendly: @(Model.Room.PetFriendly == 1 ? "Yes":"No")
             </div>
             <div style="position: relative; top: 10%; border-left: 3px solid orange; height: 110px;"></div>
             <div style=" position: absolute; top: 82%; left:8px; margin: 15px;">
@@ -99,26 +113,31 @@
                         <input type="submit" class="btn" style="position: absolute; left: 88%; padding: 2px 10px; top: 125%; background-color: #E55B13; color: white;" value="Login to Book" />
                     </form>
                 }
-
-
             }
-
         </div>
-        <div style="position:relative; left:20px; top: 200px">
-            <div style="position: relative; top:110px; left:-3%;  border-left: 3px solid orange; height: 110px;"></div>
-            <h6>Reviews</h6>
-            <table>
-                @{int i = 1; }
-                @foreach (var review in ViewBag.room.Reviews)
-                {
 
-                    <tr>
-                        <th> @review.UserName</th>
+        <div style="position:relative;top: 200px">
+            <div class="col-md-6">
+                <div id="map" style="height:250px;width:1080px"></div>
 
-                    </tr>
-                    <tr>
-                        <td>
-                            <script>
+                <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
+                <script src="https://maps.googleapis.com/maps/api/js?key=[APIKEY]"async>
+                </script>
+                <div style="position: relative; top:110px; left:-3%;  border-left: 3px solid orange; height: 110px;"></div>
+
+                <h6>Reviews</h6>
+                <table>
+                    @{int i = 1; }
+                    @foreach (var review in ViewBag.room.Reviews)
+                    {
+
+                        <tr>
+                            <th> @review.UserName</th>
+
+                        </tr>
+                        <tr>
+                            <td>
+                                <script>
                         $(function () {
 
                             $('#@("rating" + i)').rateYo({
@@ -126,51 +145,54 @@
                                 readOnly: true
                             });
                         });
-                            </script>
-                            <div id="@("rating" + i)"></div>
-                            @review.Text
-                            <br />
-                        </td>
+                                </script>
+                                <div id="@("rating" + i)"></div>
+                                @review.Text
+                                <br />
+                            </td>
 
-                    </tr>
+                        </tr>
 
-                    i++;
-                }
-            </table>
+                        i++;
+                    }
+                </table>
+            </div>
         </div>
     </div>
-</div>
 
-<div style="position:relative; top: 200px; margin-bottom:40%; left:11%; ">
-    @if (SignInManager.IsSignedIn(User))
-    {
-        @using (Html.BeginForm("SendReview", "Room", FormMethod.Post))
+    <div style="position:relative; bottom: 30px; margin-bottom:40%; left:11%; ">
+        @if (SignInManager.IsSignedIn(User))
         {
-            <div style="position: relative; left: -10%; top: 240px; border-left: 3px solid orange; height: 110px;"></div>
-            <table>
-                <tr>
-                    <th valign="top" style=" position: relative; top:125px; left:-13%; ">Add Review</th>
-                    <td>
-                        <div style="position: relative; left:-130%; top:150px;  " id="rateYo"></div>
-                        <input type="hidden" style="position: relative; " id="rating" name="rate" />
-                    </td>
-                    <td>@Html.TextAreaFor(model => model.Reviews.Text, new { cols = 60, rows = 2 })</td>
-                </tr>
-                <tr>
-                    <td>
-                        <input type="submit" class="btn" style="width: 100%; position: relative; left: 180px; top: 230px; background-color: #E55B13; color: white;" value="Add Review!" />
-                        @Html.HiddenFor(model => model.RoomId)
-                    </td>
-                </tr>
-            </table>
+            @using (Html.BeginForm("SendReview", "Room", FormMethod.Post))
+            {
+                <div style="position: relative; left: -13%; top: 270px; border-left: 3px solid orange; height: 110px;"></div>
+                <table>
+                    <tr>
+
+                        <th valign="top" style=" position: relative; top:156px; left:-15%; ">Add Review</th>
+                        <td>
+                            <div style="position: relative; left: -145%; top: 170px; width: 160px;" id="rateYo"></div>
+                            <input type="hidden" style="position: relative; " id="rating" name="rate" />
+                        </td>
+                        <td style="position: relative; left: 20%; left: -7%; bottom: -40px;">@Html.TextAreaFor(model => model.Reviews.Text, new { cols = 60, rows = 2 })</td>
+                      
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="submit" class="btn" style="width: 100%; position: relative; left: 50px; top: 250px; background-color: #E55B13; color: white;" value="Add Review!" />
+                            @Html.HiddenFor(model => model.RoomId)
+                        </td>
+                    </tr>
+                </table>
+            }
         }
-    }
-    else
-    {
-        <form method="post" asp-area="Identity" asp-page="/Account/Login">
+        else
+        {
+            <form method="post" asp-area="Identity" asp-page="/Account/Login">
 
-            <input type="submit" class="btn" style="position: absolute; padding: 2px 10px; top:95%; background-color: #E55B13; color: white;" value="Login to Review" />
-        </form>
-    }
+                <input type="submit" class="btn" style="position: absolute; padding: 2px 10px; top:95%; background-color: #E55B13; color: white;" value="Login to Review" />
+            </form>
+        }
+    </div>
+
 </div>
-

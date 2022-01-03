@@ -19,7 +19,7 @@ namespace HotelBookingSystemApp.Controllers
             _logger = logger;
             this.db = db;
         }
-
+        
         public IActionResult Index()
         {
             // Get all cities and store in ViewData

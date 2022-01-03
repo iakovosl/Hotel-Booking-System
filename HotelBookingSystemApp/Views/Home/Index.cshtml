@@ -17,8 +17,6 @@
 
     }
 </style>
-
-
     <form style="/* Center vertically and horizontally */ position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); " method="get" asp-controller="Room" asp-action="Listing">
         <div class="filters-select-flexitems">
 
@@ -39,6 +37,7 @@
             <input class="control-label" asp-for="CheckOutDate" style="width: 50%; text-align: center; position: relative; left: 6px; padding: 12px 20px; margin: 8px 0; display: inline-block; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; " type="date" placeholder="@Html.DisplayNameFor(m => m.CheckOutDate)" />
 
         </div>
+
         <input type="submit" class="btn" style="position: absolute; top: 120%; left: 50%; transform: translate(-50%, -50%); width: 30%; background-color: #E55B13; color:white; " value="Search" />
     </form>
 
