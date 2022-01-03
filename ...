@@ -1,7 +1,0 @@
-Unstaged changes after reset:
-M	HotelBookingSystemApp/Controllers/HomeController.cs
-M	HotelBookingSystemApp/Views/Home/Index.cshtml
-M	HotelBookingSystemApp/Views/Profile/Index.cshtml
-M	HotelBookingSystemApp/Views/Room/Detail.cshtml
-M	HotelBookingSystemApp/Views/Room/Listing.cshtml
-M	HotelBookingSystemApp/wwwroot/css/site.css
